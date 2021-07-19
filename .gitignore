@@ -6,3 +6,4 @@ outputs/
 .Trash-0/
 .devcontainer/
 results/
+*.pyc

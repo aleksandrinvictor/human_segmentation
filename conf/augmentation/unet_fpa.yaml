@@ -1,0 +1,37 @@
+# @package _group_
+train:
+  - class_name: albumentations.Resize
+    params:
+      height: 256
+      width: 256
+      always_apply: True
+  - class_name: albumentations.HorizontalFlip
+    params:
+      p: 0.5
+  - class_name: albumentations.augmentations.geometric.rotate.Rotate
+    params:
+      limit: 30
+  - class_name: albumentations.RandomBrightness
+  - class_name: albumentations.RandomContrast
+  - class_name: albumentations.Normalize
+  - class_name: albumentations.pytorch.ToTensorV2
+    params:
+      transpose_mask: True
+val:
+  - class_name: albumentations.Resize
+    params:
+      height: 256
+      width: 256
+      always_apply: True
+  - class_name: albumentations.Normalize
+  - class_name: albumentations.pytorch.ToTensorV2
+    params:
+      transpose_mask: True
+test:
+  - class_name: albumentations.Resize
+    params:
+      height: 256
+      width: 256
+      always_apply: True
+  - class_name: albumentations.Normalize
+  - class_name: albumentations.pytorch.ToTensorV2

@@ -15,7 +15,7 @@ common:
   device: cuda
 
 training:
-  model_id: resnet34_basic
+  model_id: unet_resnet34
   batch_size: 24
   max_epochs: 125
   profiler: False

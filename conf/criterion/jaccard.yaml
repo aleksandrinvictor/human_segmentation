@@ -1,2 +1,2 @@
 # @package _group_
-_target_: loss.SoftJaccardLoss
+_target_: humseg.loss.SoftJaccardLoss

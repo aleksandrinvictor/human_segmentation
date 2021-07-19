@@ -1,5 +1,6 @@
 import argparse
 import os
+import pathlib
 from glob import glob
 from typing import cast
 
@@ -13,6 +14,7 @@ from torch.functional import Tensor
 from humseg.dataset import HumsegDataModule
 from humseg.html import get_html
 from humseg.lit_module import LitSegmentation
+from humseg.metrics import dice_score
 from humseg.utils import encode_rle
 
 
@@ -64,6 +66,14 @@ class Predictor:
 
         return y
 
+    def _predict(self, batch: Tensor, threshold: float) -> np.ndarray:
+        y = self.model(batch)
+
+        y = torch.sigmoid(y)
+        y = (y > threshold).type(y.dtype)
+
+        return y
+
     def predict_test(self, threshold: float) -> None:
 
         self.dm.setup("test")
@@ -87,13 +97,28 @@ class Predictor:
         self.dm.setup(stage="fit")
 
         predictions = []
+
+        val_preds_to_score = []
+        true_masks = []
+
         for batch_imgs, batch_masks in self.dm.val_dataloader(shuffle=False):
 
             batch_pred = self._predict_batch(batch_imgs, threshold)
 
+            val_preds_to_score.extend(self._predict(batch_imgs, threshold))
+
             predictions.extend(batch_pred)
+            true_masks.extend(batch_masks)
 
         rle_masks = [encode_rle(mask) for mask in predictions]
+
+        preds_to_score = torch.unsqueeze(
+            torch.cat(val_preds_to_score, axis=0), 1
+        )
+        true_masks = torch.unsqueeze(torch.cat(true_masks, axis=0), 1)
+
+        val_dice_score = dice_score(preds_to_score, true_masks)
+        print(f"val_dice_score: {val_dice_score}")
 
         pred_template["rle_mask"] = rle_masks
 
@@ -104,6 +129,10 @@ class Predictor:
 
 if __name__ == "__main__":
     args = parse_args()
+
+    path = pathlib.PurePath(args.model_path)
+
+    print(f"Model: {path.name}")
 
     predictor = Predictor(args.model_path, args.output_path)
 
