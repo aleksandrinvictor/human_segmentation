@@ -1,0 +1,7 @@
+# @package _group_
+train:
+  - class_name: albumentations.pytorch.ToTensorV2
+val:
+  - class_name: albumentations.pytorch.ToTensorV2
+test:
+  - class_name: albumentations.pytorch.ToTensorV2

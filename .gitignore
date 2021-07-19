@@ -1,0 +1,8 @@
+build/
+data/
+dist/
+*.egg-info/
+outputs/
+.Trash-0/
+.devcontainer/
+results/

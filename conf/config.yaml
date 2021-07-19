@@ -1,0 +1,31 @@
+defaults:
+  - datamodule: humseg
+  - model: unet
+  - criterion: bce_dice
+  - optimizer: adam
+  - scheduler: reduce_on_plateau
+  - augmentation: basic
+  - lit_module: segmentation
+  - logger: wandb
+  - callbacks: callbacks
+  - metrics: humseg
+
+common:
+  seed: 42
+  device: cuda
+
+training:
+  model_id: resnet34_basic
+  batch_size: 24
+  max_epochs: 125
+  profiler: False
+
+data:
+  # basepath: ./data/
+  basepath: ./../../data/
+
+hydra:
+  run:
+    dir: ./outputs/${training.model_id}
+  sweep:
+    dir: ./outputs/${training.model_id}

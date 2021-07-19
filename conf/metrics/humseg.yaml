@@ -1,0 +1,12 @@
+# @package _group_
+- class_name: humseg.metrics.IoU
+  name: iou_05
+  params:
+    activation: sigmoid
+    threshold: 0.5
+
+- class_name: humseg.metrics.Dice
+  name: dice_05
+  params:
+    activation: sigmoid
+    threshold: 0.5
