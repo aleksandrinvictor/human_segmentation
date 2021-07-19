@@ -1,17 +1,17 @@
-from glob import glob
 import os
+from glob import glob
 from importlib import import_module
+from pathlib import Path
 from typing import Callable, List, Optional, Tuple
 
 import albumentations as A
 import cv2
 import numpy as np
 import pytorch_lightning as pl
+import torch
 from omegaconf import DictConfig, listconfig
 from torch import Tensor
 from torch.utils.data import DataLoader, Dataset
-import torch
-from pathlib import Path
 
 
 def get_instance(object_path: str) -> Callable:
@@ -32,9 +32,9 @@ def load_augs(cfg: DictConfig) -> A.Compose:
     """
     augs = []
     for a in cfg:
-        if a["class_name"] == "albumentations.OneOf":
+        if a["class_name"] == "albumentations.OneOf":  # type: ignore
             small_augs = []
-            for small_aug in a["params"]:
+            for small_aug in a["params"]:  # type: ignore
                 # yaml can't contain tuples, so we need to convert manually
                 params = {
                     k: (
@@ -42,23 +42,25 @@ def load_augs(cfg: DictConfig) -> A.Compose:
                         if not isinstance(v, listconfig.ListConfig)
                         else tuple(v)
                     )
-                    for k, v in small_aug["params"].items()
+                    for k, v in small_aug["params"].items()  # type: ignore
                 }
 
-                aug = get_instance(small_aug["class_name"])(**params)
+                aug = get_instance(small_aug["class_name"])(  # type: ignore
+                    **params
+                )
                 small_augs.append(aug)
-            aug = get_instance(a["class_name"])(small_augs)
+            aug = get_instance(a["class_name"])(small_augs)  # type: ignore
             augs.append(aug)
 
         else:
-            if "params" in a.keys():
+            if "params" in a.keys():  # type: ignore
                 params = {
                     k: (v if type(v) != listconfig.ListConfig else tuple(v))
-                    for k, v in a["params"].items()
+                    for k, v in a["params"].items()  # type: ignore
                 }
             else:
                 params = {}
-            aug = get_instance(a["class_name"])(**params)
+            aug = get_instance(a["class_name"])(**params)  # type: ignore
             augs.append(aug)
 
     return A.Compose(augs)
@@ -179,31 +181,46 @@ class HumsegDataModule(pl.LightningDataModule):
                 split="test",
             )
 
-    def train_dataloader(self):
+    def train_dataloader(self) -> DataLoader:
+        num_workers = os.cpu_count()
+
+        if num_workers is None:
+            num_workers = 0
+
         train_dataloader = DataLoader(
             self.train_dataset,
             batch_size=self.hparams.training.batch_size,
-            num_workers=os.cpu_count(),
+            num_workers=num_workers,
             pin_memory=True,
             shuffle=True,
         )
         return train_dataloader
 
-    def val_dataloader(self, shuffle: bool = True):
+    def val_dataloader(self, shuffle: bool = True) -> DataLoader:
+        num_workers = os.cpu_count()
+
+        if num_workers is None:
+            num_workers = 0
+
         val_dataloader = DataLoader(
             self.valid_dataset,
             batch_size=self.hparams.training.batch_size,
-            num_workers=os.cpu_count(),
+            num_workers=num_workers,
             pin_memory=True,
             shuffle=shuffle,
         )
         return val_dataloader
 
-    def test_dataloader(self):
+    def test_dataloader(self) -> DataLoader:
+        num_workers = os.cpu_count()
+
+        if num_workers is None:
+            num_workers = 0
+
         test_dataloader = DataLoader(
             self.test_dataset,
             batch_size=self.hparams.training.batch_size,
-            num_workers=os.cpu_count(),
+            num_workers=num_workers,
             pin_memory=True,
             shuffle=False,
         )

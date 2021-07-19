@@ -1,5 +1,6 @@
 import logging
 import os
+
 import hydra
 import torch
 import wandb
@@ -30,7 +31,6 @@ def main(cfg: DictConfig) -> None:
         save_dir="../",
         name=f"{cfg.training.model_id}",
         group=f"{cfg.training.model_id}",
-        # job_type=f"fold_{fold}",
         reinit=True,
     )
     os.makedirs("./checkpoints", exist_ok=True)

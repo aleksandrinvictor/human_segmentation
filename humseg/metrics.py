@@ -1,12 +1,11 @@
-from typing import Any, Callable, Dict, Union
 from importlib import import_module
+from typing import Any, Callable, Dict, Union
 
 import torch
 import torch.nn as nn
 from omegaconf.dictconfig import DictConfig
 from omegaconf.listconfig import ListConfig
 from torch import Tensor
-
 
 activation_mapping = {"softmax": nn.Softmax, "sigmoid": nn.Sigmoid}
 
@@ -126,10 +125,10 @@ def jaccard_score(input: Tensor, target: Tensor, eps: float = 1e-6) -> Tensor:
         mean jaccard score
     """
 
-    intersection = torch.sum(input * target, axis=(2, 3))
+    intersection = torch.sum(input * target, dim=(2, 3))
     union = (
-        torch.sum(input, axis=(2, 3))
-        + torch.sum(target, axis=(2, 3))
+        torch.sum(input, dim=(2, 3))
+        + torch.sum(target, dim=(2, 3))
         - intersection
     )
     return torch.mean((intersection + eps) / (union + eps))
@@ -152,9 +151,7 @@ def dice_score(input: Tensor, target: Tensor, eps: float = 1e-6) -> Tensor:
         mean dice score
     """
 
-    numerator = 2 * torch.sum(input * target, axis=(2, 3))
-    denominator = torch.sum(input, axis=(2, 3)) + torch.sum(
-        target, axis=(2, 3)
-    )
+    numerator = 2 * torch.sum(input * target, dim=(2, 3))
+    denominator = torch.sum(input, dim=(2, 3)) + torch.sum(target, dim=(2, 3))
 
     return torch.mean((numerator + eps) / (denominator + eps))

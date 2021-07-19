@@ -1,7 +1,7 @@
-from humseg.metrics import dice_score, activation_mapping
-
 import torch
 from torch import Tensor
+
+from humseg.metrics import activation_mapping, dice_score
 
 
 class SoftDiceLoss:

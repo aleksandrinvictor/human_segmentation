@@ -1,9 +1,9 @@
 import os
-import numpy as np
-
-from glob import glob
-from PIL import Image
 from datetime import datetime
+from glob import glob
+
+import numpy as np
+from PIL import Image
 
 
 def generate_html(path_to_data):
@@ -24,7 +24,7 @@ def generate_html(path_to_data):
                 "<!doctype html>",
                 "<html>",
                 "<head>",
-                "<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>",
+                "<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>",  # noqa
                 "<title>Визуализация результатов</title>",
                 "</head>",
                 "<body>",
@@ -64,7 +64,7 @@ def generate_html(path_to_data):
         html += "height='320' title='Predicted mask'></td>\n"
         html += f"<td width='240' valign='top'><img src='{path_to_crop}'"
         html += "alt='Something went wrong.'"
-        html += "height='320' title='Cropped img according\npredicted mask'></td>\n"
+        html += "height='320' title='Cropped img according\npredicted mask'></td>\n"  # noqa
         if not ind % 2:
             html += "<td width='100'></td>\n"
         else:

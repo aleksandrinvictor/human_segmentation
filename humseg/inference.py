@@ -1,15 +1,19 @@
-from torch.functional import Tensor
-from humseg.lit_module import LitSegmentation
-from humseg.dataset import HumsegDataModule
-from humseg.utils import encode_rle
-from humseg.html import get_html
-import os
-import omegaconf
-from glob import glob
 import argparse
-import torch
+import os
+from glob import glob
+from typing import cast
+
 import numpy as np
+import omegaconf
 import pandas as pd
+import torch
+from omegaconf.dictconfig import DictConfig
+from torch.functional import Tensor
+
+from humseg.dataset import HumsegDataModule
+from humseg.html import get_html
+from humseg.lit_module import LitSegmentation
+from humseg.utils import encode_rle
 
 
 def parse_args():
@@ -37,6 +41,8 @@ class Predictor:
         self.model.eval()
 
         cfg = omegaconf.OmegaConf.load(config_path)
+        cfg = cast(DictConfig, cfg)
+
         cfg.data.basepath = "./data"
         self.dm = HumsegDataModule(cfg)
 
