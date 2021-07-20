@@ -7,3 +7,4 @@ outputs/
 .devcontainer/
 results/
 *.pyc
+notebooks/.ipynb_checkpoints
