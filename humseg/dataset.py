@@ -15,6 +15,17 @@ from torch.utils.data import DataLoader, Dataset
 
 
 def get_instance(object_path: str) -> Callable:
+    """Returns object instance
+
+    Parameters
+    ----------
+    object_path: str
+        path to object
+
+    Returns
+    -------
+    Callable
+    """
 
     module_path, class_name = object_path.rsplit(".", 1)
     module = import_module(module_path)
@@ -23,12 +34,16 @@ def get_instance(object_path: str) -> Callable:
 
 
 def load_augs(cfg: DictConfig) -> A.Compose:
-    """
-    Load albumentations
-    Args:
-        cfg:
-    Returns:
-        compose object
+    """Load albumentations
+
+    Parameters
+    ----------
+    cfg: DictConfig
+        augmentations config
+
+    Returns
+    -------
+    A.Compose
     """
     augs = []
     for a in cfg:
@@ -67,6 +82,8 @@ def load_augs(cfg: DictConfig) -> A.Compose:
 
 
 class HumsegDataset(Dataset):
+    """Class for loading images and masks from disk"""
+
     def __init__(
         self,
         basepath: str,
@@ -74,6 +91,23 @@ class HumsegDataset(Dataset):
         transforms: A.Compose = None,
         split: str = "train",
     ) -> None:
+        """Initializes HumsegDataset class
+
+        Parameters
+        ----------
+        basepath: str
+            path to data
+        image_ids: List[str]
+            image names
+        transforms: A.Compose
+            augmentations
+        split: str
+            train/val/test
+
+        Returns
+        -------
+        None
+        """
 
         self.basepath = basepath
         self.image_ids = image_ids
@@ -119,9 +153,20 @@ class HumsegDataset(Dataset):
         return torch.from_numpy(image), mask
 
     def _load_image(self, path: str, mask: bool = False) -> np.ndarray:
-        """Helper function for loading image.
-        If mask is loaded, it is loaded in grayscale (, 0) parameter.
+        """Loads image or mask
+
+        Parameters
+        ----------
+        path: str
+            path to image or mask
+        mask: bool
+            whether mask is being loaded
+
+        Returns
+        -------
+        np.ndarray
         """
+
         if mask:
             img = cv2.imread(path, 0)
             img = img / 255
@@ -133,12 +178,25 @@ class HumsegDataset(Dataset):
 
 
 class HumsegDataModule(pl.LightningDataModule):
+    """Class for stroing dataloaders"""
+
     def __init__(self, cfg: DictConfig):
         super().__init__()
 
         self.hparams = cfg
 
     def setup(self, stage: Optional[str] = None) -> None:
+        """Setup datamodule in train of test mode
+
+        Parameters
+        ----------
+        stage: Optional[str]
+            setup stage
+
+        Returns
+        -------
+        None
+        """
 
         if stage == "fit" or stage is None:
 
@@ -182,6 +240,12 @@ class HumsegDataModule(pl.LightningDataModule):
             )
 
     def train_dataloader(self) -> DataLoader:
+        """Returns train dataloader
+
+        Returns
+        -------
+        DataLoader
+        """
         num_workers = os.cpu_count()
 
         if num_workers is None:
@@ -197,6 +261,13 @@ class HumsegDataModule(pl.LightningDataModule):
         return train_dataloader
 
     def val_dataloader(self, shuffle: bool = True) -> DataLoader:
+        """Returns val dataloader
+
+        Returns
+        -------
+        DataLoader
+        """
+
         num_workers = os.cpu_count()
 
         if num_workers is None:
@@ -212,6 +283,13 @@ class HumsegDataModule(pl.LightningDataModule):
         return val_dataloader
 
     def test_dataloader(self) -> DataLoader:
+        """Returns test dataloader
+
+        Returns
+        -------
+        DataLoader
+        """
+
         num_workers = os.cpu_count()
 
         if num_workers is None:

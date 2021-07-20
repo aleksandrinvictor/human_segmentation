@@ -1,6 +1,7 @@
 build/
 data/
 dist/
+wandb/
 *.egg-info/
 outputs/
 .Trash-0/

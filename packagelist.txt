@@ -65,7 +65,6 @@ graphql-core=3.1.5=pyhd8ed1ab_0
 grpcio=1.33.2=py37haffed2e_2
 harfbuzz=1.8.8=hffaf4a1_0
 hdf5=1.10.2=hc401514_3
-humseg=0.0.0=dev_0
 hydra-core=1.0.6=pyhd8ed1ab_1
 icu=58.2=he6710b0_3
 identify=2.1.4=pyhd8ed1ab_0

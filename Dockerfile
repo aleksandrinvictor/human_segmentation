@@ -10,6 +10,7 @@ ENV CMAKE_PREFIX_PATH="$(dirname $(which conda))/../"
 
 
 RUN apt-get update && apt-get install -y \
+    python-setuptools \
     git \
     ninja-build \
     libglib2.0-0 \
@@ -30,4 +31,4 @@ WORKDIR /workspaces/humseg
 RUN mkdir humseg
 COPY ./humseg ./humseg
 COPY ./setup.py ./
-RUN python setup.py install
+RUN pip install setuptools -U && pip install -e .

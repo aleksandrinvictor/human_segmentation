@@ -30,7 +30,22 @@ def parse_args():
 
 
 class Predictor:
+    """Class for inference"""
+
     def __init__(self, model_path: str, output_path: str) -> None:
+        """Initializes Predictor class
+
+        Parameters
+        ----------
+        model_path: str
+            path to model
+        output_path: str
+            output path
+
+        Returns
+        -------
+        None
+        """
 
         checkpoint_path = glob(os.path.join(model_path, "checkpoints/*.ckpt"))[
             0
@@ -75,6 +90,17 @@ class Predictor:
         return y
 
     def predict_test(self, threshold: float) -> None:
+        """Predicts masks for test samples, generates html
+
+        Parameters
+        ----------
+        threshold: float
+            threshold
+
+        Returns
+        -------
+        None
+        """
 
         self.dm.setup("test")
 
@@ -91,6 +117,17 @@ class Predictor:
         )
 
     def predict_valid(self, threshold: float) -> None:
+        """Predicts masks for validation samples, generates rle encoding
+
+        Parameters
+        ----------
+        threshold: float
+            threshold
+
+        Returns
+        -------
+        None
+        """
 
         pred_template = pd.read_csv("./data/pred_valid_template.csv")
 

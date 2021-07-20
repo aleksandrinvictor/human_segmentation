@@ -7,6 +7,8 @@ from humseg.metrics import load_metrics
 
 
 class LitSegmentation(pl.LightningModule):
+    """Class for training segmentation models"""
+
     def __init__(self, cfg: DictConfig):
         super(LitSegmentation, self).__init__()
 

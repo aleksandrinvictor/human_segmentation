@@ -37,7 +37,7 @@ class SoftDiceLoss:
         Returns
         -------
         Tensor
-            mean dice score
+            soft dice loss
         """
 
         if self.activation is not None:
@@ -56,6 +56,21 @@ class BceDiceLoss:
         self.dice_coef = dice_coef
 
     def __call__(self, y_pred: Tensor, y_true: Tensor) -> Tensor:
+        """
+        Parameters
+        ----------
+        y_pred: Tensor
+            input tensor with shape (batch_size, num_classes, height, width)
+            must sum to 1 over c channel (such as after softmax)
+        y_true: Tensor
+            one hot target tensor with shape
+            (batch_size, num_classes, height, width)
+
+        Returns
+        -------
+        Tensor
+            bce dice loss
+        """
 
         return self.bce_coef * self.bce(
             y_pred, y_true

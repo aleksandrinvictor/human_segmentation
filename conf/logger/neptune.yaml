@@ -1,5 +1,0 @@
-# @package _group_
-_target_: pytorch_lightning.loggers.NeptuneLogger
-save_dir: './'
-project: 'alexvct/salt-identification'
-default_hp_metric: False
